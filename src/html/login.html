@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+    <title>Login</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="wrapper-content">
+        <div id="wrapper-logo">
+          <img src="./logo.png" alt="logo" />
+        </div>
+        <div id="wrapper-form">
+          <h1>Login</h1>
+          <form id="form">
+            <input
+              type="email"
+              id="femail"
+              name="valueEmail"
+              placeholder="Email@endereço.com"
+              required
+            />
+            <input
+              type="password"
+              id="fpassword"
+              name="valuePassword"
+              placeholder="Senha"
+              required
+            />
+          </form>
+          <div id="btn">
+            <span class="noselect">Entrar</span>
+            <div id="circle" onclick="createUser()"></div>
+          </div>
+          <div id="register">
+            <a href="./register.html">Cadastra-se</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const createUser = async () => {
+        try {
+          const email = document.getElementById("femail").value;
+          const password = document.getElementById("fpassword").value;
+
+          if(!email || !password){
+            return alert('Todos os campos sao necessarios!')
+          }
+
+          let users = {
+            email: email,
+            password: password,
+          };
+
+          const response = await fetch("http://localhost:3333/sessions", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+              Accept: "application/json",
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(users),
+          });
+
+          const data = await response.json();
+          console.log(data);
+          if (data.statusCode === 400) {
+            return alert("Erro no servidor!");
+          }
+          if (data.status === 'error') {
+            return alert(data.message);
+          }
+          alert("Login concluido!");
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    </script>
+  </body>
+</html>
